@@ -3,6 +3,8 @@ package me.often.aureliummobs.listeners;
 import me.often.aureliummobs.entities.AureliumMob;
 import me.often.aureliummobs.Main;
 import me.often.aureliummobs.util.ColorUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Monster;
@@ -18,6 +20,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.Arrays;
+
+import static me.often.aureliummobs.Main.mm;
 
 public class MobDamage implements Listener {
 
@@ -42,19 +46,19 @@ public class MobDamage implements Listener {
         double resHealth = m.getHealth() - e.getDamage();
         String formattedHealth = plugin.getFormatter().format(resHealth);
         try {
-            m.setCustomName(ColorUtils.colorMessage(plugin.getConfigString("settings.name-format")
-                    .replace("{mob}", plugin.getConfigString("mobs."+m.getType().name().toLowerCase()))
+            m.customName(mm.deserialize(plugin.getConfigString("settings.name-format")
                     .replace("{lvl}", Integer.toString(level))
                     .replace("{health}", formattedHealth)
                     .replace("{maxhealth}", plugin.getFormatter().format(m.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()))
-            ));
+            ).append(Component.translatable(e.getEntity().getType().translationKey())).decoration(TextDecoration.ITALIC, false)
+            );
         } catch (NullPointerException ex){
-            m.setCustomName(ColorUtils.colorMessage(plugin.getConfigString("settings.name-format")
-                    .replace("{mob}", m.getType().name())
+            m.customName(mm.deserialize(plugin.getConfigString("settings.name-format")
                     .replace("{lvl}", Integer.toString(level))
                     .replace("{health}", formattedHealth)
                     .replace("{maxhealth}", plugin.getFormatter().format(m.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue()))
-            ));
+            ).append(Component.translatable(e.getEntity().getType().translationKey())).decoration(TextDecoration.ITALIC, false)
+            );
         }
 
     }

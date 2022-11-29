@@ -1,7 +1,5 @@
 package me.often.aureliummobs;
 
-import com.archyx.aureliumskills.AureliumSkills;
-import com.osiris.dyml.DYModule;
 import com.osiris.dyml.DYValueContainer;
 import com.osiris.dyml.DreamYaml;
 import com.osiris.dyml.exceptions.DYReaderException;
@@ -12,17 +10,17 @@ import me.often.aureliummobs.api.WorldGuardHook;
 import me.often.aureliummobs.commands.AureliumMobsCommand;
 import me.often.aureliummobs.listeners.*;
 import me.often.aureliummobs.commands.tabcompleters.AureliumMobsCommandTabCompleter;
-import me.often.aureliummobs.util.Metrics;
-import com.archyx.aureliumskills.api.AureliumAPI;
-import com.archyx.aureliumskills.skills.Skills;
 import me.often.aureliummobs.util.Formatter;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -32,7 +30,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 
 public class Main extends JavaPlugin {
 
@@ -44,9 +42,9 @@ public class Main extends JavaPlugin {
     private static double maxHealth;
     private static double maxDamage;
     private static boolean namesEnabled;
-    private static Metrics metrics;
     private static final int bstatsId = 12142;
     public static int globalLevel;
+    public static MiniMessage mm = MiniMessage.miniMessage();
     private Formatter formatter;
 
     @Override
@@ -74,8 +72,6 @@ public class Main extends JavaPlugin {
                 this.getServer().getPluginManager().registerEvents(new MoveEvent(this), this);
             }
         }
-
-        metrics = new Metrics(this, bstatsId);
 
         getServer().getPluginManager().registerEvents(new MobDeath(), this);
         /*try {
@@ -199,34 +195,42 @@ public class Main extends JavaPlugin {
         return this.getConfig().getBoolean(path);
     }
 
-    public int getSumLevel(Player p) {
-
-        int result = 0;
-
-        for (Skills s: Skills.values()) {
-            result+= AureliumAPI.getSkillLevel(p, s);
-        }
-
-        return result;
-
-    }
-
     public int getGlobalLevel() {
         return globalLevel;
     }
 
     public int getLevel(Player p) {
 
-        String formula = getConfigString("settings.player-level-formula")
-                .replace("{sumall}", Integer.toString(getSumLevel(p)))
-                .replace("{skillcount}", Integer.toString(Skills.values().length));
+        int level = 0;
 
-        for (Skills s: Skills.values()){
-            String replace = "{" + s.name().toLowerCase() + "}";
-            formula = formula.replace(replace, Integer.toString(AureliumAPI.getSkillLevel(p, s)));
+        PlayerInventory inventory = p.getInventory();
+        ItemStack chestplate = inventory.getChestplate();
+        if (chestplate != null) {
+            for (Integer i : chestplate.getEnchantments().values()) {
+                level = level+i;
+            }
         }
 
-        int level = (int) new ExpressionBuilder(formula).build().evaluate();
+        ItemStack boots = inventory.getBoots();
+        if (boots != null) {
+            for (Integer i : boots.getEnchantments().values()) {
+                level = level+i;
+            }
+        }
+
+        ItemStack helmet = inventory.getHelmet();
+        if (helmet != null) {
+            for (Integer i : helmet.getEnchantments().values()) {
+                level = level+i;
+            }
+        }
+
+        ItemStack leggings = inventory.getLeggings();
+        if (leggings != null) {
+            for (Integer i : leggings.getEnchantments().values()) {
+                level = level+i;
+            }
+        }
 
         return level;
 

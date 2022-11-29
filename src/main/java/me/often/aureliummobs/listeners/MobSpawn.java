@@ -104,13 +104,9 @@ public class MobSpawn implements Listener {
                     if (lvl>maxlevel) {maxlevel = lvl;}
                     if (lvl<minlevel) {minlevel = lvl;}
                 }
-                Location mobloc = monster.getLocation();
-                Location spawnpoint = monster.getLocation().getWorld().getSpawnLocation();
-                double distance = mobloc.distance(spawnpoint);
                 int level;
                 if (players.size() == 0 || sumlevel == 0) {
                     String lformula = MessageUtils.setPlaceholders(null, plugin.getConfigString("settings.default-mob-level-formula")
-                            .replace("{distance}", Double.toString(distance))
                             .replace("{sumlevel_global}", Integer.toString(Main.getInstance().getGlobalLevel()))
                             .replace("{location_x}", Double.toString(monster.getLocation().getX()))
                             .replace("{location_y}", Double.toString(monster.getLocation().getY()))
@@ -124,7 +120,6 @@ public class MobSpawn implements Listener {
                             .replace("{lowestlvl}", Integer.toString(minlevel))
                             .replace("{sumlevel}", Integer.toString(sumlevel))
                             .replace("{playercount}", Integer.toString(players.size()))
-                            .replace("{distance}", Double.toString(distance))
                             .replace("{sumlevel_global}", Integer.toString(Main.getInstance().getGlobalLevel()))
                             .replace("{location_x}", Double.toString(monster.getLocation().getX()))
                             .replace("{location_y}", Double.toString(monster.getLocation().getY()))

@@ -3,6 +3,8 @@ package me.often.aureliummobs.entities;
 import me.often.aureliummobs.Main;
 import me.often.aureliummobs.util.ColorUtils;
 import me.often.aureliummobs.util.MessageUtils;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.Location;
@@ -16,6 +18,8 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
+import static me.often.aureliummobs.Main.mm;
 
 public class AureliumMob {
 
@@ -80,13 +84,14 @@ public class AureliumMob {
         mob.setHealth(health);
         mob.getPersistentDataContainer().set(Main.mobKey, PersistentDataType.INTEGER, level);
         if (Main.getInstance().isNamesEnabled()) {
-            mob.setCustomName(ColorUtils.colorMessage(plugin.getConfigString("settings.name-format")
-                    .replace("{mob}", plugin.getConfigString("mobs."+mob.getType().name().toLowerCase()))
+            mob.customName(
+                    mm.deserialize(plugin.getConfigString("settings.name-format")
                     .replace("{lvl}", String.valueOf(this.level))
                     .replace("{health}", formattedHealth)
                     .replace("{maxhealth}", formattedHealth)
                     .replace("{distance}", Double.toString(distance))
-            ));
+            ).append(Component.translatable(mob.getType().translationKey())).decoration(TextDecoration.ITALIC, false)
+            );
             mob.setCustomNameVisible(false);
         }
     }

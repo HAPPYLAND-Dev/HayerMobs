@@ -1,13 +1,13 @@
 main: me.often.aureliummobs.Main
-name: AureliumMobs
+name: HayerMobs
 author: _OfTeN_
 version: 1.18
 api-version: 1.16
-depend:
-  - AureliumSkills
 softdepend:
   - PlaceholderAPI
   - WorldGuard
 commands:
   aureliummobs:
     aliases: [amobs, am]
+libraries:
+  - net.objecthunter:exp4j:0.4.8
