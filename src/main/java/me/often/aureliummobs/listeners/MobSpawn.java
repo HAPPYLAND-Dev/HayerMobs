@@ -25,6 +25,7 @@ public class MobSpawn implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onSpawn(CreatureSpawnEvent e) {
+        if (e.getSpawnReason() == CreatureSpawnEvent.SpawnReason.COMMAND) return;
         try {
             if (e.getEntity() instanceof Boss) {
                 return;

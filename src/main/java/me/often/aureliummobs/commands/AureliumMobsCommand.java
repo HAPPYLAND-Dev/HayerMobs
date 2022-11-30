@@ -10,6 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
 public class AureliumMobsCommand implements CommandExecutor {
 
@@ -42,7 +43,7 @@ public class AureliumMobsCommand implements CommandExecutor {
                     try {
                         if (sender instanceof Player p) {
                             int level = Integer.parseInt(args[0]);
-                            Entity monster = p.getLocation().getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE);
+                            Entity monster = p.getLocation().getWorld().spawnEntity(p.getLocation(), EntityType.ZOMBIE, CreatureSpawnEvent.SpawnReason.COMMAND);
                             new AureliumMob((Monster) monster, level, Main.getInstance());
                         }
                     } catch (Exception e) {
