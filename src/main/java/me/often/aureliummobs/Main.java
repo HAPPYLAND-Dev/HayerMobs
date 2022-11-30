@@ -38,12 +38,10 @@ public class Main extends JavaPlugin {
     public static WorldGuardHook wghook;
     public static int globalLevel;
     public static MiniMessage mm = MiniMessage.miniMessage();
-    public static String name = "<dark_gray>[<color:#cfcb72>Lv.{lvl}</color>]</dark_gray> <white>";
-    public static String health = "</white> <dark_gray>[<red>{health}<gray>/</gray>{maxhealth}</red>]</dark_gray>";
+    public static String name = " <color:#cfcb72>Lv.{lvl}</color>";
     private static Main instance;
     private static double maxHealth;
     private static double maxDamage;
-    private static boolean namesEnabled;
     private Formatter formatter;
 
     public static Main getInstance() {
@@ -65,16 +63,11 @@ public class Main extends JavaPlugin {
             globalLevel += getLevel(player);
         }
         mobKey = new NamespacedKey(this, "isAureliumMob");
-        namesEnabled = getConfigBool("settings.enable-mob-names");
         this.getServer().getPluginManager().registerEvents(new MobSpawn(this), this);
-        if (namesEnabled) {
-            this.getServer().getPluginManager().registerEvents(new MobDamage(this), this);
-            this.getServer().getPluginManager().registerEvents(new MobTransform(), this);
-            this.getServer().getPluginManager().registerEvents(new PlayerJoinLeave(), this);
-            if (getConfigBool("settings.display-by-range")) {
-                this.getServer().getPluginManager().registerEvents(new MoveEvent(this), this);
-            }
-        }
+
+        this.getServer().getPluginManager().registerEvents(new MobDamage(this), this);
+        this.getServer().getPluginManager().registerEvents(new MobTransform(), this);
+        this.getServer().getPluginManager().registerEvents(new PlayerEvent(), this);
 
         getServer().getPluginManager().registerEvents(new MobDeath(), this);
         /*try {
@@ -103,10 +96,6 @@ public class Main extends JavaPlugin {
     public void initCommands() {
         getCommand("aureliummobs").setExecutor(new AureliumMobsCommand());
         getCommand("aureliummobs").setTabCompleter(new AureliumMobsCommandTabCompleter());
-    }
-
-    public boolean isNamesEnabled() {
-        return namesEnabled;
     }
 
     public double getMaxHealth() {

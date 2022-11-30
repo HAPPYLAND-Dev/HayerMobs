@@ -1,7 +1,5 @@
 settings:
   check-radius: 24
-  display-by-range: true
-  display-range: 12
   enable-mob-names: true
   health-format-max-places: 2
 

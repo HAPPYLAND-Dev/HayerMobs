@@ -26,7 +26,7 @@ public class MobTransform implements Listener {
 
             event.getTransformedEntity().getPersistentDataContainer().remove(Main.mobKey);
             event.getTransformedEntity().setCustomNameVisible(false);
-            event.getTransformedEntity().setCustomName(null);
+            event.getTransformedEntity().customName(null);
 
         }
 

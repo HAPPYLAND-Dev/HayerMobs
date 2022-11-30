@@ -19,7 +19,7 @@ public class MobDeath implements Listener {
         }
 
         m.setCustomNameVisible(false);
-        m.setCustomName(null);
+        m.customName(null);
     }
 
 }

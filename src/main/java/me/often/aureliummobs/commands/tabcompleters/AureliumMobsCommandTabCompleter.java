@@ -16,6 +16,7 @@ public class AureliumMobsCommandTabCompleter implements TabCompleter {
 
         if (completions.isEmpty()) {
             completions.add("reload");
+            completions.add("level");
         }
 
         List<String> fit = new ArrayList<>();
