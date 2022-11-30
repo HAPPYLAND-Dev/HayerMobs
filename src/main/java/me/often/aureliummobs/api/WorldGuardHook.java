@@ -37,7 +37,8 @@ public record WorldGuardHook(boolean hasWorldGuard) {
             registry.register(minMoblevel);
             registry.register(maxMoblevel);
             registry.register(mobsEnabled);
-        } catch (IllegalStateException ignored) {}
+        } catch (IllegalStateException ignored) {
+        }
     }
 
     public int getMinLevel(Location loc) {

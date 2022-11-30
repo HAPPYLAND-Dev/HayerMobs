@@ -10,11 +10,11 @@ public class PlayerJoinLeave implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        Main.globalLevel+=Main.getInstance().getLevel(event.getPlayer());
+        Main.globalLevel += Main.getInstance().getLevel(event.getPlayer());
     }
 
     public void onLeave(PlayerQuitEvent event) {
-        Main.globalLevel-=Main.getInstance().getLevel(event.getPlayer());
+        Main.globalLevel -= Main.getInstance().getLevel(event.getPlayer());
     }
 
 }

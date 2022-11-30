@@ -12,25 +12,21 @@ public class MessageUtils {
 
     public static void sendMessage(String message, Player p) {
         if (message.startsWith("chat!")) {
-            sendChatMessage(message.replace("chat! ","").replace("chat!", ""), p);
-        }
-        else if (message.startsWith("title!")) {
-            sendTitleMessage(message.replace("title! ","").replace("title!", ""), p);
-        }
-        else if (message.startsWith("actionbar!")) {
-            sendActionbarMessage(message.replace("actionbar! ","").replace("actionbar!", ""), p);
+            sendChatMessage(message.replace("chat! ", "").replace("chat!", ""), p);
+        } else if (message.startsWith("title!")) {
+            sendTitleMessage(message.replace("title! ", "").replace("title!", ""), p);
+        } else if (message.startsWith("actionbar!")) {
+            sendActionbarMessage(message.replace("actionbar! ", "").replace("actionbar!", ""), p);
         }
     }
 
     public static void sendConsoleMessage(CommandSender sender, String message) {
         if (message.startsWith("chat!")) {
-            sender.sendMessage(ColorUtils.colorMessage(message.replace("chat! ","").replace("chat!", "")));
-        }
-        else if (message.startsWith("title!")) {
-            sender.sendMessage(ColorUtils.colorMessage(message.replace("title! ","").replace("title!", "")));
-        }
-        else if (message.startsWith("actionbar!")) {
-            sender.sendMessage(ColorUtils.colorMessage(message.replace("actionbar! ","").replace("actionbar!", "")));
+            sender.sendMessage(ColorUtils.colorMessage(message.replace("chat! ", "").replace("chat!", "")));
+        } else if (message.startsWith("title!")) {
+            sender.sendMessage(ColorUtils.colorMessage(message.replace("title! ", "").replace("title!", "")));
+        } else if (message.startsWith("actionbar!")) {
+            sender.sendMessage(ColorUtils.colorMessage(message.replace("actionbar! ", "").replace("actionbar!", "")));
         }
     }
 
@@ -43,11 +39,11 @@ public class MessageUtils {
         p.spigot().sendMessage(ChatMessageType.ACTION_BAR, component);
     }
 
-    public static void sendChatMessage(String message, Player p){
+    public static void sendChatMessage(String message, Player p) {
         p.sendMessage(ColorUtils.colorMessage(message));
     }
 
-    public static String setPlaceholders(Player player, String text){
+    public static String setPlaceholders(Player player, String text) {
         if (Main.getInstance().getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
             return text;
         } else {

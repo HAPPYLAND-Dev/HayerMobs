@@ -1,7 +1,7 @@
 package me.often.aureliummobs.listeners;
 
-import me.often.aureliummobs.entities.AureliumMob;
 import me.often.aureliummobs.Main;
+import me.often.aureliummobs.entities.AureliumMob;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.EventHandler;
@@ -12,12 +12,11 @@ import java.util.List;
 
 public class MoveEvent implements Listener {
 
-    private Main plugin;
+    private final Main plugin;
 
-    public MoveEvent(Main plugin){
+    public MoveEvent(Main plugin) {
         this.plugin = plugin;
     }
-
 
 
     @EventHandler

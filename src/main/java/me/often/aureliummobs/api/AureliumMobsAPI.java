@@ -1,7 +1,7 @@
 package me.often.aureliummobs.api;
 
-import me.often.aureliummobs.entities.AureliumMob;
 import me.often.aureliummobs.Main;
+import me.often.aureliummobs.entities.AureliumMob;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
@@ -14,14 +14,14 @@ public class AureliumMobsAPI {
 
     /**
      * A method to get the given mobs level
+     *
      * @param e - mob to get level of
      * @return the level of given mob, if not AureliumMob returns 1
      */
     public static int getMobLevel(Entity e) {
-        if (!(e instanceof Monster)) {
+        if (!(e instanceof Monster m)) {
             return 1;
         }
-        Monster m = (Monster) e;
         if (!AureliumMob.isAureliumMob(m)) {
             return 1;
         }
@@ -34,6 +34,7 @@ public class AureliumMobsAPI {
 
     /**
      * A method to get the given mobs health
+     *
      * @param e - mob to get health of
      * @return health of given mob, if not a Monster returns 1
      */
@@ -46,6 +47,7 @@ public class AureliumMobsAPI {
 
     /**
      * A method to get the given mobs max health
+     *
      * @param e - mob to get max health of
      * @return max health of given mob, if not a Monster returns 1
      */
@@ -58,6 +60,7 @@ public class AureliumMobsAPI {
 
     /**
      * A method to get the given mobs max health
+     *
      * @param e - mob to get damage of
      * @return damage of given mob, if not a Monster returns 1
      */

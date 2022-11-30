@@ -8,6 +8,6 @@ softdepend:
   - WorldGuard
 commands:
   aureliummobs:
-    aliases: [amobs, am]
+    aliases: [ amobs, am ]
 libraries:
   - net.objecthunter:exp4j:0.4.8

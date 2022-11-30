@@ -21,7 +21,7 @@ public class AureliumMobsCommandTabCompleter implements TabCompleter {
         List<String> fit = new ArrayList<>();
 
         if (args.length == 1) {
-            for (String a: completions) {
+            for (String a : completions) {
                 if (a.startsWith(args[0])) {
                     fit.add(a);
                 }

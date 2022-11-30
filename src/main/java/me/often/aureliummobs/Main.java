@@ -8,16 +8,14 @@ import com.osiris.dyml.exceptions.DuplicateKeyException;
 import com.osiris.dyml.exceptions.IllegalListException;
 import me.often.aureliummobs.api.WorldGuardHook;
 import me.often.aureliummobs.commands.AureliumMobsCommand;
-import me.often.aureliummobs.listeners.*;
 import me.often.aureliummobs.commands.tabcompleters.AureliumMobsCommandTabCompleter;
+import me.often.aureliummobs.listeners.*;
 import me.often.aureliummobs.util.Formatter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.objecthunter.exp4j.ExpressionBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -30,22 +28,27 @@ import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Main extends JavaPlugin {
 
+    private static final int bstatsId = 12142;
     public static List<String> enabledworlds;
     public static boolean world_whitelist;
     public static NamespacedKey mobKey;
     public static WorldGuardHook wghook;
+    public static int globalLevel;
+    public static MiniMessage mm = MiniMessage.miniMessage();
+    public static String name = "<dark_gray>[<color:#cfcb72>Lv.{lvl}</color>]</dark_gray> <white>";
+    public static String health = "</white> <dark_gray>[<red>{health}<gray>/</gray>{maxhealth}</red>]</dark_gray>";
     private static Main instance;
     private static double maxHealth;
     private static double maxDamage;
     private static boolean namesEnabled;
-    private static final int bstatsId = 12142;
-    public static int globalLevel;
-    public static MiniMessage mm = MiniMessage.miniMessage();
     private Formatter formatter;
+
+    public static Main getInstance() {
+        return instance;
+    }
 
     @Override
     public void onLoad() {
@@ -57,18 +60,18 @@ public class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         globalLevel = 0;
-        this.saveDefaultConfig();
-        for (Player player: this.getServer().getOnlinePlayers()) {
-            globalLevel+=getLevel(player);
+        //this.saveDefaultConfig();
+        for (Player player : this.getServer().getOnlinePlayers()) {
+            globalLevel += getLevel(player);
         }
         mobKey = new NamespacedKey(this, "isAureliumMob");
         namesEnabled = getConfigBool("settings.enable-mob-names");
         this.getServer().getPluginManager().registerEvents(new MobSpawn(this), this);
-        if (namesEnabled){
+        if (namesEnabled) {
             this.getServer().getPluginManager().registerEvents(new MobDamage(this), this);
             this.getServer().getPluginManager().registerEvents(new MobTransform(), this);
             this.getServer().getPluginManager().registerEvents(new PlayerJoinLeave(), this);
-            if (getConfigBool("settings.display-by-range")){
+            if (getConfigBool("settings.display-by-range")) {
                 this.getServer().getPluginManager().registerEvents(new MoveEvent(this), this);
             }
         }
@@ -114,10 +117,6 @@ public class Main extends JavaPlugin {
         return maxDamage;
     }
 
-    public static Main getInstance() {
-        return instance;
-    }
-
     public String getConfigString(String path) {
         return this.getConfig().getString(path);
     }
@@ -134,11 +133,10 @@ public class Main extends JavaPlugin {
         File oldCfg = new File(this.getDataFolder(), "config_old.yml");
         File cfg = new File(this.getDataFolder(), "config.yml");
         DreamYaml dreamYaml = new DreamYaml(cfg).load();
-        if (!cfg.exists()){
+        if (!cfg.exists()) {
             this.saveDefaultConfig();
-        }
-        else {
-            if (oldCfg.exists()){
+        } else {
+            if (oldCfg.exists()) {
                 oldCfg.delete();
             }
             cfg.renameTo(oldCfg);
@@ -146,7 +144,7 @@ public class Main extends JavaPlugin {
             this.reloadConfig();
             YamlConfiguration oldConfig = YamlConfiguration.loadConfiguration(new File(this.getDataFolder(), "config_old.yml"));
             for (String key : oldConfig.getKeys(true)) {
-                if (this.getConfig().get(key) != null && !(this.getConfig().get(key) instanceof ConfigurationSection)){
+                if (this.getConfig().get(key) != null && !(this.getConfig().get(key) instanceof ConfigurationSection)) {
                     this.getConfig().set(key, oldConfig.get(key));
                     saveKey(dreamYaml, oldConfig.get(key), key);
                 }
@@ -163,28 +161,18 @@ public class Main extends JavaPlugin {
 
         if (value instanceof String string) {
             config.get(key).setValues(string);
-        }
-
-        else if (value instanceof Integer integer){
-            config.get(key).setValues(""+integer);
-        }
-
-        else if (value instanceof Double doubl){
-            config.get(key).setValues(""+doubl);
-        }
-
-        else if (value instanceof Float fl){
-            config.get(key).setValues(""+fl);
-        }
-
-        else if (value instanceof Boolean bool){
-            config.get(key).setValues(""+bool);
-        }
-
-        else if (value instanceof List list){
+        } else if (value instanceof Integer integer) {
+            config.get(key).setValues("" + integer);
+        } else if (value instanceof Double doubl) {
+            config.get(key).setValues("" + doubl);
+        } else if (value instanceof Float fl) {
+            config.get(key).setValues("" + fl);
+        } else if (value instanceof Boolean bool) {
+            config.get(key).setValues("" + bool);
+        } else if (value instanceof List list) {
             List<DYValueContainer> newList = new ArrayList<>();
-            for (Object o: list) {
-                newList.add(new DYValueContainer(""+o));
+            for (Object o : list) {
+                newList.add(new DYValueContainer("" + o));
             }
             config.get(key).setValues(newList);
         }
@@ -207,28 +195,28 @@ public class Main extends JavaPlugin {
         ItemStack chestplate = inventory.getChestplate();
         if (chestplate != null) {
             for (Integer i : chestplate.getEnchantments().values()) {
-                level = level+i;
+                level = level + i;
             }
         }
 
         ItemStack boots = inventory.getBoots();
         if (boots != null) {
             for (Integer i : boots.getEnchantments().values()) {
-                level = level+i;
+                level = level + i;
             }
         }
 
         ItemStack helmet = inventory.getHelmet();
         if (helmet != null) {
             for (Integer i : helmet.getEnchantments().values()) {
-                level = level+i;
+                level = level + i;
             }
         }
 
         ItemStack leggings = inventory.getLeggings();
         if (leggings != null) {
             for (Integer i : leggings.getEnchantments().values()) {
-                level = level+i;
+                level = level + i;
             }
         }
 
@@ -239,5 +227,5 @@ public class Main extends JavaPlugin {
     public Formatter getFormatter() {
         return formatter;
     }
-    
+
 }

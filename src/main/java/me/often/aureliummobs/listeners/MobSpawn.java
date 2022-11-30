@@ -1,13 +1,11 @@
 package me.often.aureliummobs.listeners;
 
-import me.often.aureliummobs.entities.AureliumMob;
 import me.often.aureliummobs.Main;
-import me.often.aureliummobs.util.MessageUtils;
-import net.objecthunter.exp4j.ExpressionBuilder;
+import me.often.aureliummobs.entities.AureliumMob;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Boss;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,13 +17,13 @@ import java.util.List;
 
 public class MobSpawn implements Listener {
 
-    private Main plugin;
+    private final Main plugin;
 
-    public MobSpawn(Main plugin){
+    public MobSpawn(Main plugin) {
         this.plugin = plugin;
     }
 
-    @EventHandler (ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true)
     public void onSpawn(CreatureSpawnEvent e) {
         try {
             if (e.getEntity() instanceof Boss) {
@@ -43,7 +41,7 @@ public class MobSpawn implements Listener {
 
             if (!passWorld(e.getEntity().getWorld())) return;
 
-            if (Main.wghook != null){
+            if (Main.wghook != null) {
                 if (!(Main.wghook.mobsEnabled(e.getLocation()))) {
                     return;
                 }
@@ -54,8 +52,7 @@ public class MobSpawn implements Listener {
 
             if (type.equalsIgnoreCase("blacklist") && (mobs.contains(e.getEntity().getType().name()) || mobs.contains("*"))) {
                 return;
-            }
-            else if (type.equalsIgnoreCase("whitelist") && (!mobs.contains(e.getEntity().getType().name().toUpperCase()) && !mobs.contains("*"))) {
+            } else if (type.equalsIgnoreCase("whitelist") && (!mobs.contains(e.getEntity().getType().name().toUpperCase()) && !mobs.contains("*"))) {
                 return;
             }
 
@@ -74,14 +71,15 @@ public class MobSpawn implements Listener {
         if (Main.world_whitelist) {
             if (Main.enabledworlds.contains("*")) return true;
             for (String enabledworld : Main.enabledworlds) {
-                if (world.getName().equalsIgnoreCase(enabledworld) || world.getName().startsWith(enabledworld.replace("*", ""))) return true;
+                if (world.getName().equalsIgnoreCase(enabledworld) || world.getName().startsWith(enabledworld.replace("*", "")))
+                    return true;
             }
             return false;
-        }
-        else {
+        } else {
             if (Main.enabledworlds.contains("*")) return false;
             for (String enabledworld : Main.enabledworlds) {
-                if (world.getName().equalsIgnoreCase(enabledworld) || world.getName().startsWith(enabledworld.replace("*", ""))) return false;
+                if (world.getName().equalsIgnoreCase(enabledworld) || world.getName().startsWith(enabledworld.replace("*", "")))
+                    return false;
             }
             return true;
         }
@@ -95,37 +93,29 @@ public class MobSpawn implements Listener {
                     return;
                 }
                 int sumlevel = 0;
+                int provar = 0;
                 int maxlevel = Integer.MIN_VALUE;
                 int minlevel = Integer.MAX_VALUE;
-                List<Entity> players = monster.getNearbyEntities(radius, radius, radius).stream().filter(entity -> entity instanceof Player).toList();
-                for (Entity player: players) {
-                    int lvl = plugin.getLevel((Player) player);
-                    sumlevel+=lvl;
-                    if (lvl>maxlevel) {maxlevel = lvl;}
-                    if (lvl<minlevel) {minlevel = lvl;}
+                List<Player> players = monster.getLocation().getNearbyPlayers(radius).stream().toList();
+                for (Player player : players) {
+                    int lvl = plugin.getLevel(player);
+                    sumlevel += lvl;
+                    var att = player.getAttribute(Attribute.GENERIC_ARMOR);
+                    if (att != null) {
+                        provar += att.getValue();
+                    }
+                    if (lvl > maxlevel) {
+                        maxlevel = lvl;
+                    }
+                    if (lvl < minlevel) {
+                        minlevel = lvl;
+                    }
                 }
                 int level;
-                if (players.size() == 0 || sumlevel == 0) {
-                    String lformula = MessageUtils.setPlaceholders(null, plugin.getConfigString("settings.default-mob-level-formula")
-                            .replace("{sumlevel_global}", Integer.toString(Main.getInstance().getGlobalLevel()))
-                            .replace("{location_x}", Double.toString(monster.getLocation().getX()))
-                            .replace("{location_y}", Double.toString(monster.getLocation().getY()))
-                            .replace("{location_z}", Double.toString(monster.getLocation().getZ()))
-                    );
-                    level = (int) new ExpressionBuilder(lformula).build().evaluate();
-                }
-                else {
-                    String lformula = MessageUtils.setPlaceholders(null, plugin.getConfigString("settings.mob-level-formula")
-                            .replace("{highestlvl}", Integer.toString(maxlevel))
-                            .replace("{lowestlvl}", Integer.toString(minlevel))
-                            .replace("{sumlevel}", Integer.toString(sumlevel))
-                            .replace("{playercount}", Integer.toString(players.size()))
-                            .replace("{sumlevel_global}", Integer.toString(Main.getInstance().getGlobalLevel()))
-                            .replace("{location_x}", Double.toString(monster.getLocation().getX()))
-                            .replace("{location_y}", Double.toString(monster.getLocation().getY()))
-                            .replace("{location_z}", Double.toString(monster.getLocation().getZ()))
-                    );
-                    level = (int) new ExpressionBuilder(lformula).build().evaluate();
+                if (players.size() == 0) {
+                    level = (int) Math.abs(monster.getLocation().getY()) / 4;
+                } else {
+                    level = sumlevel * 2 + provar + 1;
                 }
                 new AureliumMob(monster, correctLevel(monster.getLocation(), level), plugin);
             }
@@ -142,7 +132,7 @@ public class MobSpawn implements Listener {
         } else if (level > Main.wghook.getMaxLevel(loc)) {
             return Main.wghook.getMaxLevel(loc);
         } else {
-             return level;
+            return level;
         }
     }
 

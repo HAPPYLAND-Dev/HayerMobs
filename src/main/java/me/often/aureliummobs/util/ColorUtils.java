@@ -15,10 +15,10 @@ import java.util.regex.Pattern;
 
 public class ColorUtils {
 
-    private static final String RAW_GRADIENT_HEX_REGEX = "<\\$#[A-Fa-f0-9]{6}>";
     public static final String HEX_REGEX = "#[A-Fa-f0-9]{6}";
     public static final String TAG_REGEX = "^[A-Za-z0-9_]{1,16}$";
     public static final String RAW_HEX_REGEX = "<#[A-Fa-f0-9]{6}>";
+    private static final String RAW_GRADIENT_HEX_REGEX = "<\\$#[A-Fa-f0-9]{6}>";
 
     public static String legacyToJson(String legacyString) {
         if (legacyString == null) return "";
@@ -33,14 +33,14 @@ public class ColorUtils {
 
 
     public static String colorMessage(String legacyMsg) {
-        try{
-            if (legacyMsg.isEmpty()){
+        try {
+            if (legacyMsg.isEmpty()) {
                 return legacyMsg;
             }
-            if (ChatColor.translateAlternateColorCodes('&',legacyMsg).isEmpty()){
+            if (ChatColor.translateAlternateColorCodes('&', legacyMsg).isEmpty()) {
                 return ChatColor.translateAlternateColorCodes('&', legacyMsg);
             }
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             return legacyMsg;
         }
 
@@ -135,9 +135,12 @@ public class ColorUtils {
             int red = (int) Math.round(finalColor.getRed() + rStep);
             int green = (int) Math.round(finalColor.getGreen() + gStep);
             int blue = (int) Math.round(finalColor.getBlue() + bStep);
-            if (red > 255) red = 255; if (red < 0) red = 0;
-            if (green > 255) green = 255; if (green < 0) green = 0;
-            if (blue > 255) blue = 255; if (blue < 0) blue = 0;
+            if (red > 255) red = 255;
+            if (red < 0) red = 0;
+            if (green > 255) green = 255;
+            if (green < 0) green = 0;
+            if (blue > 255) blue = 255;
+            if (blue < 0) blue = 0;
             finalColor = new Color(red, green, blue);
             String hex = "#" + Integer.toHexString(finalColor.getRGB()).substring(2);
             String formats = "";
